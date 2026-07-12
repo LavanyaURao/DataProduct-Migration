@@ -1,6 +1,11 @@
 package com.lavanya.migration.reader;
 
-import java.sql.*;
+import com.lavanya.migration.writer.CSVWriter;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class TableReader {
 
@@ -25,16 +30,16 @@ public class TableReader {
                     continue;
                 }
 
-                System.out.println("\n=========================================");
-                System.out.println("TABLE : " + tableName);
-                System.out.println("=========================================");
+                System.out.println("Generating CSV for : " + tableName);
 
                 readTable(connection, tableName);
+
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private static void readTable(Connection connection, String tableName) {
@@ -45,23 +50,7 @@ public class TableReader {
 
             ResultSet rs = statement.executeQuery("SELECT * FROM " + tableName);
 
-            ResultSetMetaData metaData = rs.getMetaData();
-
-            int columnCount = metaData.getColumnCount();
-
-            while (rs.next()) {
-
-                for (int i = 1; i <= columnCount; i++) {
-
-                    System.out.printf("%-20s : %s%n",
-                            metaData.getColumnName(i),
-                            rs.getObject(i));
-
-                }
-
-                System.out.println("-----------------------------------------");
-
-            }
+            CSVWriter.write(rs, tableName);
 
         } catch (Exception e) {
             e.printStackTrace();

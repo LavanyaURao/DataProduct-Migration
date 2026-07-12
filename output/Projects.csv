@@ -1,0 +1,11 @@
+ProjectID,ProjectName,StartDate,EndDate,Status
+1,Data Migration,2026-01-01,2026-08-30,Active
+2,HR Portal,2026-02-10,2026-09-20,Active
+3,CRM Upgrade,2026-01-15,2026-10-01,Active
+4,Payroll Automation,2026-03-01,2026-11-15,Planning
+5,Cloud Migration,2026-04-01,2026-12-20,Planning
+6,AI Chatbot,2026-05-01,2026-12-30,Planning
+7,ERP Upgrade,2026-02-20,2026-10-30,Active
+8,Cyber Security,2026-01-10,2026-09-01,Completed
+9,Mobile App,2026-03-10,2026-12-31,Active
+10,Analytics Dashboard,2026-04-15,2026-11-30,Active
