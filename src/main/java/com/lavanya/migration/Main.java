@@ -19,7 +19,7 @@ public class Main {
 
             System.out.println("✅ Connection Successful!");
 
-            TableReader.listTables(connection);
+            TableReader.readTables(connection);
 
             connection.close();
 
