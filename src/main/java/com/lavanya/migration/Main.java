@@ -1,5 +1,6 @@
 package com.lavanya.migration;
 
+import com.lavanya.migration.compressor.GzipCompressor;
 import com.lavanya.migration.db.DatabaseConnection;
 import com.lavanya.migration.reader.TableReader;
 import com.lavanya.migration.utils.FileUtils;
@@ -24,7 +25,13 @@ public class Main {
             System.out.println("✅ Connection Successful!");
 
             // Read all tables and generate CSV files
+            System.out.println("\nGenerating CSV files...");
             TableReader.readTables(connection);
+
+            // Compress all generated CSV files
+            System.out.println("\nCompressing CSV files...");
+            GzipCompressor.compressAllCsvFiles();
+            System.out.println("✅ All CSV files compressed successfully!");
 
             // Close database connection
             connection.close();
