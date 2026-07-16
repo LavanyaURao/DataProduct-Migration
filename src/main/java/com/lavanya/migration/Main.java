@@ -11,25 +11,25 @@ import java.sql.Connection;
 public class Main {
 
     public static void main(String[] args) {
-
         System.out.println("      DATA PRODUCT MIGRATION");
+
+        Connection connection = null;
 
         try {
 
             // Create output folder if it doesn't exist
             FileUtils.createOutputFolder();
 
+            // Connect to Azure SQL Database
             System.out.println("\nConnecting to Azure SQL Database...");
-
-            Connection connection = DatabaseConnection.getConnection();
-
+            connection = DatabaseConnection.getConnection();
             System.out.println("✅ Connection Successful!");
 
-            // Read all tables and generate CSV files
+            // Generate CSV files
             System.out.println("\nGenerating CSV files...");
             TableReader.readTables(connection);
 
-            // Compress all generated CSV files
+            // Compress CSV files
             System.out.println("\nCompressing CSV files...");
             GzipCompressor.compressAllCsvFiles();
             System.out.println("✅ All CSV files compressed successfully!");
@@ -38,15 +38,33 @@ public class Main {
             System.out.println("\nConnecting to Azure Data Lake Storage...");
             AzureStorageUploader.initialize();
 
-            // Close database connection
-            connection.close();
+            // Upload all GZIP files
+            System.out.println("\nUploading GZIP files to Azure Data Lake Storage...");
+            AzureStorageUploader.uploadAllFiles();
 
-            System.out.println("\n✅ Process Completed Successfully!");
+            System.out.println("\n========================================");
+            System.out.println("✅ PROCESS COMPLETED SUCCESSFULLY!");
+            System.out.println("========================================");
 
         } catch (Exception e) {
 
-            System.out.println("\n❌ Error occurred while executing the application.");
+            System.out.println("\n========================================");
+            System.out.println("❌ PROCESS FAILED!");
+            System.out.println("========================================");
+
             e.printStackTrace();
+
+        } finally {
+
+            try {
+
+                if (connection != null) {
+                    connection.close();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
 
