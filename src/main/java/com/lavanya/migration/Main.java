@@ -4,6 +4,7 @@ import com.lavanya.migration.compressor.GzipCompressor;
 import com.lavanya.migration.db.DatabaseConnection;
 import com.lavanya.migration.reader.TableReader;
 import com.lavanya.migration.storage.AzureStorageUploader;
+import com.lavanya.migration.translator.DDLTranslator;
 import com.lavanya.migration.utils.FileUtils;
 
 import java.sql.Connection;
@@ -11,7 +12,10 @@ import java.sql.Connection;
 public class Main {
 
     public static void main(String[] args) {
+
+
         System.out.println("      DATA PRODUCT MIGRATION");
+
 
         Connection connection = null;
 
@@ -24,6 +28,10 @@ public class Main {
             System.out.println("\nConnecting to Azure SQL Database...");
             connection = DatabaseConnection.getConnection();
             System.out.println("✅ Connection Successful!");
+
+            // Generate Snowflake DDL files
+            System.out.println("\nGenerating Snowflake DDL files...");
+            DDLTranslator.translateAllTables(connection);
 
             // Generate CSV files
             System.out.println("\nGenerating CSV files...");
@@ -51,7 +59,6 @@ public class Main {
             System.out.println("\n========================================");
             System.out.println("❌ PROCESS FAILED!");
             System.out.println("========================================");
-
             e.printStackTrace();
 
         } finally {
@@ -60,6 +67,7 @@ public class Main {
 
                 if (connection != null) {
                     connection.close();
+                    System.out.println("\nDatabase connection closed.");
                 }
 
             } catch (Exception e) {
