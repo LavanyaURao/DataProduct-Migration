@@ -3,6 +3,7 @@ package com.lavanya.migration;
 import com.lavanya.migration.compressor.GzipCompressor;
 import com.lavanya.migration.db.DatabaseConnection;
 import com.lavanya.migration.reader.TableReader;
+import com.lavanya.migration.storage.AzureStorageUploader;
 import com.lavanya.migration.utils.FileUtils;
 
 import java.sql.Connection;
@@ -32,6 +33,10 @@ public class Main {
             System.out.println("\nCompressing CSV files...");
             GzipCompressor.compressAllCsvFiles();
             System.out.println("✅ All CSV files compressed successfully!");
+
+            // Connect to Azure Data Lake Storage
+            System.out.println("\nConnecting to Azure Data Lake Storage...");
+            AzureStorageUploader.initialize();
 
             // Close database connection
             connection.close();
