@@ -4,6 +4,7 @@ import com.lavanya.migration.compressor.GzipCompressor;
 import com.lavanya.migration.db.DatabaseConnection;
 import com.lavanya.migration.reader.TableReader;
 import com.lavanya.migration.snowflake.SnowflakeDDLExecutor;
+import com.lavanya.migration.snowflake.SnowflakeDataLoader;
 import com.lavanya.migration.storage.AzureStorageUploader;
 import com.lavanya.migration.translator.DDLTranslator;
 import com.lavanya.migration.utils.FileUtils;
@@ -13,7 +14,6 @@ import java.sql.Connection;
 public class Main {
 
     public static void main(String[] args) {
-
 
         System.out.println("      DATA PRODUCT MIGRATION");
 
@@ -54,6 +54,10 @@ public class Main {
             System.out.println("\nUploading GZIP files to Azure Data Lake Storage...");
             AzureStorageUploader.uploadAllFiles();
 
+            // Load data into Snowflake
+            System.out.println("\nLoading data into Snowflake...");
+            SnowflakeDataLoader.loadAllTables();
+
             System.out.println("\n========================================");
             System.out.println("✅ PROCESS COMPLETED SUCCESSFULLY!");
             System.out.println("========================================");
@@ -63,6 +67,7 @@ public class Main {
             System.out.println("\n========================================");
             System.out.println("❌ PROCESS FAILED!");
             System.out.println("========================================");
+
             e.printStackTrace();
 
         } finally {
