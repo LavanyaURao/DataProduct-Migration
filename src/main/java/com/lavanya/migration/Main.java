@@ -1,6 +1,7 @@
 package com.lavanya.migration;
 
 import com.lavanya.migration.compressor.GzipCompressor;
+import com.lavanya.migration.config.ConfigLoader;
 import com.lavanya.migration.db.DatabaseConnection;
 import com.lavanya.migration.reader.TableReader;
 import com.lavanya.migration.snowflake.SnowflakeDDLExecutor;
@@ -14,6 +15,16 @@ import java.sql.Connection;
 public class Main {
 
     public static void main(String[] args) {
+
+        // Check if config file is provided
+        if (args.length != 1) {
+            System.out.println("Usage:");
+            System.out.println("java -jar DataProductMigration-1.0-SNAPSHOT.jar <config-file>");
+            return;
+        }
+
+        // Load configuration
+        ConfigLoader.load(args[0]);
 
         System.out.println("      DATA PRODUCT MIGRATION");
 

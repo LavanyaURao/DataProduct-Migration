@@ -1,0 +1,4 @@
+CREATE OR REPLACE TABLE test001 (
+    col1 VARCHAR(10),
+    col2 INTEGER
+);

@@ -9,7 +9,7 @@ import java.util.Properties;
 
 public class SnowflakeConnection {
 
-    public static Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException, ClassNotFoundException {
 
         String url = ConfigLoader.getProperty("snowflake.url");
 
@@ -32,6 +32,9 @@ public class SnowflakeConnection {
 
         properties.put("role",
                 ConfigLoader.getProperty("snowflake.role"));
+
+        // Explicitly load Snowflake JDBC Driver
+        Class.forName("net.snowflake.client.jdbc.SnowflakeDriver");
 
         return DriverManager.getConnection(url, properties);
     }
