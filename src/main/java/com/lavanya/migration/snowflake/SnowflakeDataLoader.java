@@ -1,5 +1,8 @@
 package com.lavanya.migration.snowflake;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Statement;
 
@@ -17,13 +20,10 @@ public class SnowflakeDataLoader {
             statement.execute("USE DATABASE DATA_PRODUCT_MIGRATION");
             statement.execute("USE SCHEMA MIGRATION");
 
-            // Load each table
-            loadTable(statement, "Attendance");
-            loadTable(statement, "Departments");
-            loadTable(statement, "EmployeeProjects");
-            loadTable(statement, "Employees");
-            loadTable(statement, "Projects");
-            loadTable(statement, "Salaries");
+            // Automatically load all .csv.gz files
+            Files.walk(Paths.get("output"))
+                    .filter(path -> path.toString().endsWith(".csv.gz"))
+                    .forEach(path -> loadTable(statement, path));
 
             statement.close();
 
@@ -38,20 +38,33 @@ public class SnowflakeDataLoader {
 
     }
 
-    private static void loadTable(Statement statement, String tableName)
-            throws Exception {
+    private static void loadTable(Statement statement, Path path) {
 
-        System.out.println("Loading table : " + tableName);
+        try {
 
-        String copyInto =
-                "COPY INTO " + tableName +
-                        " FROM @migration_stage/" + tableName + ".csv.gz " +
-                        " FILE_FORMAT = (FORMAT_NAME = csv_gzip_format) " +
-                        " ON_ERROR = CONTINUE";
+            String fileName = path.getFileName().toString();
 
-        statement.execute(copyInto);
+            // Remove .csv.gz to get table name
+            String tableName = fileName.replace(".csv.gz", "");
 
-        System.out.println("✅ Loaded : " + tableName);
+            System.out.println("Loading table : " + tableName);
+
+            String copyInto =
+                    "COPY INTO " + tableName +
+                            " FROM @migration_stage/" + fileName +
+                            " FILE_FORMAT = (FORMAT_NAME = csv_gzip_format) " +
+                            " ON_ERROR = CONTINUE";
+
+            statement.execute(copyInto);
+
+            System.out.println("✅ Loaded : " + tableName);
+
+        } catch (Exception e) {
+
+            System.out.println("❌ Failed loading : " + path.getFileName());
+            e.printStackTrace();
+
+        }
 
     }
 
